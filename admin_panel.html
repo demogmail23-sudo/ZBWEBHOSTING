@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>Admin Panel - ZAINU HOST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #05060a;
+            --bg-card: rgba(12, 17, 29, 0.95);
+            --admin-gold: #FFD700;
+            --admin-gold-dark: #FFA500;
+            --admin-gradient: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+            --success: #00ff88;
+            --danger: #ff5555;
+            --warning: #ffaa00;
+            --text: #ffffff;
+            --text-muted: #a0aec0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid var(--admin-gold);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            background: var(--admin-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .admin-badge {
+            background: var(--admin-gradient);
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 30px;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .tab.active {
+            background: var(--admin-gradient);
+            color: #000;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--admin-gold);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--admin-gold);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: var(--admin-gradient);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: var(--admin-gold);
+            font-size: 16px;
+        }
+
+        .user-details {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .delete-btn {
+            background: rgba(255, 85, 85, 0.2);
+            border: 1px solid var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: var(--danger);
+            cursor: pointer;
+        }
+
+        .log-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .log-time {
+            color: var(--admin-gold);
+            font-size: 11px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .success { background: rgba(0, 255, 136, 0.15); border: 1px solid var(--success); color: var(--success); }
+        .error { background: rgba(255, 85, 85, 0.15); border: 1px solid var(--danger); color: var(--danger); }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .user-item { flex-direction: column; align-items: flex-start; }
+            .tabs { justify-content: center; }
+            .tab { padding: 8px 16px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo-area">
+            <div class="logo">👑 ZAINU ADMIN</div>
+            <div class="admin-badge">⭐ SUPER ADMIN</div>
+        </div>
+        <div class="user-area">
+            <span>👋 Welcome, <strong id="adminName">Admin</strong></span>
+            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab" onclick="switchTab('users')">👥 Users</button>
+            <button class="tab" onclick="switchTab('create')">➕ Create User</button>
+            <button class="tab" onclick="switchTab('activity')">📋 Activity Logs</button>
+            <button class="tab" onclick="switchTab('settings')">⚙️ Settings</button>
+            <button class="tab" onclick="switchTab('backup')">💾 Backup</button>
+            <button class="tab" onclick="switchTab('system')">🖥️ System</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboardTab">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-number" id="totalUsers">0</div><div>Total Users</div></div>
+                <div class="stat-card"><div class="stat-number" id="totalServers">0</div><div>Total Servers</div></div>
+                <div class="stat-card"><div class="stat-number" id="totalStorage">0 MB</div><div>Storage Used</div></div>
+                <div class="stat-card"><div class="stat-number" id="totalApiKeys">0</div><div>API Keys</div></div>
+                <div class="stat-card"><div class="stat-number" id="totalSubdomains">0</div><div>Subdomains</div></div>
+                <div class="stat-card"><div class="stat-number" id="activeUsers">0</div><div>Active Today</div></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📈 Recent Activity</div>
+                <div id="recentActivity"></div>
+                <button class="btn-secondary" style="margin-top:15px" onclick="loadDashboardData()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" style="display:none">
+            <div class="card">
+                <div class="card-title">👥 All Users</div>
+                <div id="usersList"></div>
+                <button class="btn-secondary" style="margin-top:15px" onclick="loadUsers()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Create User Tab -->
+        <div id="createTab" style="display:none">
+            <div class="card">
+                <div class="card-title">➕ Create New User</div>
+                <div class="form-group"><label>👤 Username</label><input type="text" id="newUsername" placeholder="Enter username"></div>
+                <div class="form-group"><label>📧 Email (Optional)</label><input type="email" id="newEmail" placeholder="user@example.com"></div>
+                <div class="form-group"><label>🔒 Password</label><input type="password" id="newPassword" placeholder="Minimum 6 characters"></div>
+                <div class="form-group"><label>🔐 Confirm Password</label><input type="password" id="confirmPassword" placeholder="Re-enter password"></div>
+                <div class="form-group"><label>💾 Storage Quota</label><select id="userQuota"><option value="500">500 MB</option><option value="1000">1 GB</option><option value="2000">2 GB</option><option value="5000">5 GB</option><option value="10000">10 GB</option></select></div>
+                <button class="btn" onclick="createUser()">✨ Create Account</button>
+                <div id="createMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Activity Logs Tab -->
+        <div id="activityTab" style="display:none">
+            <div class="card">
+                <div class="card-title">📋 Activity Logs</div>
+                <div id="activityLogs"></div>
+                <button class="btn-secondary" style="margin-top:15px" onclick="loadActivityLogs()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" style="display:none">
+            <div class="card">
+                <div class="card-title">⚙️ System Settings</div>
+                <div class="form-group"><label>📢 Announcement Message</label><input type="text" id="announcement" placeholder="Announcement text"></div>
+                <div class="form-group"><label>🔧 Maintenance Mode</label><select id="maintenanceMode"><option value="false">Off - Website Working</option><option value="true">On - Maintenance Mode</option></select></div>
+                <div class="form-group"><label>🎁 Referral Bonus (MB)</label><input type="number" id="referralBonus" value="100"></div>
+                <div class="form-group"><label>🖥️ Max Servers Per User</label><input type="number" id="maxServers" value="10"></div>
+                <button class="btn" onclick="saveSettings()">💾 Save Settings</button>
+                <div id="settingsMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Backup Tab -->
+        <div id="backupTab" style="display:none">
+            <div class="card">
+                <div class="card-title">💾 Backup & Restore</div>
+                <button class="btn" onclick="createFullBackup()">🔄 Create Full Backup</button>
+                <div id="backupMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- System Tab -->
+        <div id="systemTab" style="display:none">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-number" id="systemCpu">0%</div><div>CPU Usage</div></div>
+                <div class="stat-card"><div class="stat-number" id="systemRam">0 MB</div><div>RAM Usage</div></div>
+                <div class="stat-card"><div class="stat-number" id="systemDisk">0 MB</div><div>Disk Usage</div></div>
+                <div class="stat-card"><div class="stat-number" id="systemUptime">0s</div><div>Uptime</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📦 Database Info</div>
+                <div id="dbInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAdmin = "";
+
+        async function checkAuth() {
+            const res = await fetch('/api/current_user');
+            const data = await res.json();
+            if (!data.success || !data.is_admin) {
+                window.location.href = '/login';
+                return;
+            }
+            currentAdmin = data.username;
+            document.getElementById('adminName').textContent = data.username;
+            loadDashboardData();
+            loadUsers();
+            loadActivityLogs();
+            loadSettings();
+            loadSystemInfo();
+        }
+
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('dashboardTab').style.display = tab === 'dashboard' ? 'block' : 'none';
+            document.getElementById('usersTab').style.display = tab === 'users' ? 'block' : 'none';
+            document.getElementById('createTab').style.display = tab === 'create' ? 'block' : 'none';
+            document.getElementById('activityTab').style.display = tab === 'activity' ? 'block' : 'none';
+            document.getElementById('settingsTab').style.display = tab === 'settings' ? 'block' : 'none';
+            document.getElementById('backupTab').style.display = tab === 'backup' ? 'block' : 'none';
+            document.getElementById('systemTab').style.display = tab === 'system' ? 'block' : 'none';
+            
+            if (tab === 'dashboard') loadDashboardData();
+            if (tab === 'users') loadUsers();
+            if (tab === 'activity') loadActivityLogs();
+            if (tab === 'system') loadSystemInfo();
+        }
+
+        async function loadDashboardData() {
+            const res = await fetch('/api/admin/users');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('totalUsers').textContent = data.users.length;
+                let totalStorage = 0, totalServers = 0, totalApiKeys = 0;
+                data.users.forEach(u => {
+                    totalStorage += u.storage_used || 0;
+                    totalServers += u.servers_count || 0;
+                    totalApiKeys += u.api_keys_count || 0;
+                });
+                document.getElementById('totalStorage').textContent = totalStorage + ' MB';
+                document.getElementById('totalServers').textContent = totalServers;
+                document.getElementById('totalApiKeys').textContent = totalApiKeys;
+                document.getElementById('totalSubdomains').textContent = data.users.reduce((a,b) => a + (b.subdomains_count || 0), 0);
+                
+                const today = new Date().toLocaleDateString();
+                let active = data.users.filter(u => new Date(u.last_login).toLocaleDateString() === today).length;
+                document.getElementById('activeUsers').textContent = active;
+            }
+            
+            const activityRes = await fetch('/api/admin/activity-logs?limit=5');
+            const activityData = await activityRes.json();
+            const container = document.getElementById('recentActivity');
+            if (activityData.logs && activityData.logs.length > 0) {
+                container.innerHTML = activityData.logs.map(log => `
+                    <div class="log-item">
+                        <div class="log-time">${new Date(log.timestamp).toLocaleString()}</div>
+                        <div><strong style="color:#FFD700">${log.username}</strong> → ${log.action}</div>
+                        <div style="font-size:11px">${log.details || ''}</div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div style="text-align:center; padding:20px">No recent activity</div>';
+            }
+        }
+
+        async function loadUsers() {
+            const res = await fetch('/api/admin/users');
+            const data = await res.json();
+            const container = document.getElementById('usersList');
+            
+            if (data.users.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px">📭 No users yet</div>';
+                return;
+            }
+            
+            container.innerHTML = data.users.map(u => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-name">👤 ${u.username}</div>
+                        <div class="user-details">
+                            📧 ${u.email || 'No email'} | 📅 Joined: ${new Date(u.created_at).toLocaleDateString()}<br>
+                            🔑 Last Login: ${u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never'}<br>
+                            📦 ${u.storage_used || 0} MB / ${u.storage_quota || 500} MB | 🖥️ ${u.servers_count || 0} servers | 🔑 ${u.api_keys_count || 0} API keys
+                        </div>
+                    </div>
+                    <div>
+                        <button class="delete-btn" onclick="deleteUser('${u.username}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteUser(username) {
+            if (confirm(`⚠️ Delete user "${username}"? This cannot be undone!`)) {
+                const res = await fetch('/api/admin/delete-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('User deleted successfully!', 'success', 'createMessage');
+                    loadUsers();
+                    loadDashboardData();
+                } else {
+                    showMessage(data.message, 'error', 'createMessage');
+                }
+            }
+        }
+
+        async function createUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const email = document.getElementById('newEmail').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const quota = document.getElementById('userQuota').value;
+            
+            if (!username || !password) {
+                showMessage('Please fill username and password', 'error', 'createMessage');
+                return;
+            }
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error', 'createMessage');
+                return;
+            }
+            if (password !== confirm) {
+                showMessage('Passwords do not match', 'error', 'createMessage');
+                return;
+            }
+            
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, email, quota })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showMessage('✅ User created successfully!', 'success', 'createMessage');
+                document.getElementById('newUsername').value = '';
+                document.getElementById('newEmail').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                loadUsers();
+                loadDashboardData();
+            } else {
+                showMessage('❌ ' + data.message, 'error', 'createMessage');
+            }
+        }
+
+        async function loadActivityLogs() {
+            const res = await fetch('/api/admin/activity-logs?limit=100');
+            const data = await res.json();
+            const container = document.getElementById('activityLogs');
+            
+            if (!data.logs || data.logs.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px">📭 No activity logs yet</div>';
+                return;
+            }
+            
+            container.innerHTML = data.logs.map(log => `
+                <div class="log-item">
+                    <div class="log-time">📅 ${new Date(log.timestamp).toLocaleString()}</div>
+                    <div><strong style="color:#FFD700">${log.username}</strong> → ${log.action}</div>
+                    <div style="font-size:12px">📝 ${log.details || ''}</div>
+                    <div style="font-size:10px; color:#a0aec0">🌐 IP: ${log.ip}</div>
+                </div>
+            `).join('');
+        }
+
+        async function loadSettings() {
+            const res = await fetch('/api/admin/settings');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('announcement').value = data.settings.announcement || '';
+                document.getElementById('maintenanceMode').value = data.settings.maintenance_mode ? 'true' : 'false';
+                document.getElementById('referralBonus').value = data.settings.referral_bonus || 100;
+                document.getElementById('maxServers').value = data.settings.max_servers || 10;
+            }
+        }
+
+        async function saveSettings() {
+            const announcement = document.getElementById('announcement').value;
+            const maintenance_mode = document.getElementById('maintenanceMode').value === 'true';
+            const referral_bonus = parseInt(document.getElementById('referralBonus').value);
+            const max_servers = parseInt(document.getElementById('maxServers').value);
+            
+            const res = await fetch('/api/admin/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ announcement, maintenance_mode, referral_bonus, max_servers })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showMessage('✅ Settings saved!', 'success', 'settingsMessage');
+            } else {
+                showMessage('❌ Failed to save settings', 'error', 'settingsMessage');
+            }
+        }
+
+        async function createFullBackup() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Creating backup...';
+            btn.disabled = true;
+            
+            const res = await fetch('/api/admin/backup', { method: 'POST' });
+            const data = await res.json();
+            
+            if (data.success) {
+                showMessage(`✅ Backup created: ${data.backup_name}`, 'success', 'backupMessage');
+            } else {
+                showMessage('❌ Backup failed', 'error', 'backupMessage');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        async function loadSystemInfo() {
+            try {
+                const cpuRes = await fetch('/api/system/cpu');
+                const cpuData = await cpuRes.json();
+                document.getElementById('systemCpu').textContent = cpuData.cpu || '0%';
+                
+                const memRes = await fetch('/api/system/memory');
+                const memData = await memRes.json();
+                document.getElementById('systemRam').textContent = memData.memory || '0 MB';
+                document.getElementById('systemDisk').textContent = memData.disk || '0 MB';
+                document.getElementById('systemUptime').textContent = memData.uptime || '0s';
+                
+                document.getElementById('dbInfo').innerHTML = `
+                    <div>📁 Database Path: zainu_host.db</div>
+                    <div>📦 Total Tables: 10+</div>
+                    <div>👥 Users Collection: Active</div>
+                    <div>🖥️ Servers Collection: Active</div>
+                `;
+            } catch(e) {
+                document.getElementById('systemCpu').textContent = 'N/A';
+                document.getElementById('systemRam').textContent = 'N/A';
+            }
+        }
+
+        function showMessage(text, type, elementId) {
+            const msgDiv = document.getElementById(elementId);
+            msgDiv.textContent = text;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => msgDiv.style.display = 'none', 4000);
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
